@@ -22,3 +22,23 @@ const (
 	defaultPullTimeout = 48 * time.Hour   // pretty generous, in case someone has a poor connection
 	mimeJSON           = "application/json"
 )
+
+func (c *Config) SetSeed(seed int) *Config {
+	c.SeedOrNegative = seed
+	return c
+}
+
+func (c *Config) SetRandomSeed() *Config {
+	c.SeedOrNegative = -1
+	return c
+}
+
+func (c *Config) SetTemperature(temperature float64) *Config {
+	c.TemperatureIfNegativeSeed = temperature
+	return c
+}
+
+func (c *Config) SetContextLength(contextLength int64) *Config {
+	c.ContextLength = contextLength
+	return c
+}
