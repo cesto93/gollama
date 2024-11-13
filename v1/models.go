@@ -19,3 +19,18 @@ func (c *Gollama) ListModels() ([]string, error) {
 
 	return resp, nil
 }
+
+func (c *Gollama) HasModel(model string) (bool, error) {
+	models, err := c.ListModels()
+	if err != nil {
+		return false, err
+	}
+
+	for _, m := range models {
+		if m == model || m == model+":latest" {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
