@@ -2,7 +2,7 @@ package gollama
 
 import "time"
 
-type Config struct {
+type Gollama struct {
 	ServerAddr                string
 	ModelName                 string
 	SeedOrNegative            int
@@ -23,22 +23,22 @@ const (
 	mimeJSON           = "application/json"
 )
 
-func (c *Config) SetSeed(seed int) *Config {
+func (c *Gollama) SetSeed(seed int) *Gollama {
 	c.SeedOrNegative = seed
 	return c
 }
 
-func (c *Config) SetRandomSeed() *Config {
+func (c *Gollama) SetRandomSeed() *Gollama {
 	c.SeedOrNegative = -1
 	return c
 }
 
-func (c *Config) SetTemperature(temperature float64) *Config {
+func (c *Gollama) SetTemperature(temperature float64) *Gollama {
 	c.TemperatureIfNegativeSeed = temperature
 	return c
 }
 
-func (c *Config) SetContextLength(contextLength int64) *Config {
+func (c *Gollama) SetContextLength(contextLength int64) *Gollama {
 	c.ContextLength = contextLength
 	return c
 }

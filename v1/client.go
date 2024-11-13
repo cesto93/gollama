@@ -2,12 +2,12 @@ package gollama
 
 import "github.com/xyproto/env"
 
-func New(model string) *Config {
+func New(model string) *Gollama {
 	if len(model) == 0 {
 		model = defaultModel
 	}
 
-	oc := Config{
+	oc := Gollama{
 		ServerAddr:                env.Str("OLLAMA_HOST", "http://localhost:11434"),
 		ModelName:                 env.Str("OLLAMA_MODEL", model),
 		SeedOrNegative:            defaultFixedSeed,
