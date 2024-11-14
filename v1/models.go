@@ -43,3 +43,18 @@ func (c *Gollama) HasModel(model string) (bool, error) {
 
 	return false, nil
 }
+
+func (c *Gollama) ModelSize(model string) (int, error) {
+	models, err := c.ListModels()
+	if err != nil {
+		return 0, err
+	}
+
+	for _, m := range models {
+		if m.Name == model || m.Name == model+":latest" {
+			return m.Size, nil
+		}
+	}
+
+	return 0, nil
+}
