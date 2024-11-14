@@ -88,3 +88,29 @@ func TestGollama_PullModel(t *testing.T) {
 		})
 	}
 }
+
+func TestGollama_PullIfMissing(t *testing.T) {
+	type args struct {
+		model string
+	}
+	tests := []struct {
+		name    string
+		c       *Gollama
+		args    args
+		wantErr bool
+	}{
+		{
+			name:    "PullIfMissing",
+			c:       New("llama3.2"),
+			args:    args{model: "llama3.2"},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.c.PullIfMissing(tt.args.model); (err != nil) != tt.wantErr {
+				t.Errorf("Gollama.PullIfMissing() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}

@@ -1,6 +1,9 @@
 package gollama
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type ModelInfo struct {
 	Name string
@@ -43,7 +46,7 @@ func (c *Gollama) HasModel(model string) (bool, error) {
 		}
 	}
 
-	return false, nil
+	return false, errors.New("model not found")
 }
 
 func (c *Gollama) ModelSize(model string) (int, error) {
@@ -85,5 +88,18 @@ func (c *Gollama) PullModel(model string) error {
 	if resp.Status != "success" {
 		return fmt.Errorf("failed to pull model %s", model)
 	}
+	return nil
+}
+
+func (c *Gollama) PullIfMissing(model string) error {
+	hasModel, err := c.HasModel(model)
+	if err != nil {
+		return err
+	}
+
+	if !hasModel {
+		return c.PullModel(model)
+	}
+
 	return nil
 }
