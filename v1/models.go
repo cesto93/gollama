@@ -1,8 +1,14 @@
 package gollama
 
-func (c *Gollama) ListModels() ([]string, error) {
+type ModelInfo struct {
+	Name string
+	Size int
+}
+
+func (c *Gollama) ListModels() ([]ModelInfo, error) {
 	type modelStr struct {
 		Model string `json:"model"`
+		Size  int    `json:"size"`
 	}
 
 	type responseStr struct {
@@ -12,9 +18,12 @@ func (c *Gollama) ListModels() ([]string, error) {
 	var r responseStr
 	c.apiGet("/api/tags", &r)
 
-	var resp []string
+	var resp []ModelInfo
 	for _, m := range r.Models {
-		resp = append(resp, m.Model)
+		resp = append(resp, ModelInfo{
+			Name: m.Model,
+			Size: m.Size,
+		})
 	}
 
 	return resp, nil
@@ -27,7 +36,7 @@ func (c *Gollama) HasModel(model string) (bool, error) {
 	}
 
 	for _, m := range models {
-		if m == model || m == model+":latest" {
+		if m.Name == model || m.Name == model+":latest" {
 			return true, nil
 		}
 	}
