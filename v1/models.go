@@ -1,5 +1,7 @@
 package gollama
 
+import "fmt"
+
 type ModelInfo struct {
 	Name string
 	Size int
@@ -57,4 +59,31 @@ func (c *Gollama) ModelSize(model string) (int, error) {
 	}
 
 	return 0, nil
+}
+
+func (c *Gollama) PullModel(model string) error {
+	fmt.Println("Pulling model", model)
+
+	type requestStr struct {
+		Model  string `json:"model"`
+		Stream bool   `json:"stream"`
+	}
+
+	type responseStr struct {
+		Status string `json:"status"`
+	}
+
+	req := requestStr{
+		Model:  model,
+		Stream: false,
+	}
+
+	var resp responseStr
+
+	c.apiPost("/api/pull", &resp, req)
+
+	if resp.Status != "success" {
+		return fmt.Errorf("failed to pull model %s", model)
+	}
+	return nil
 }

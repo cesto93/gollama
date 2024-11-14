@@ -1,6 +1,7 @@
 package gollama
 
 import (
+	"log"
 	"testing"
 )
 
@@ -59,6 +60,31 @@ func TestGollama_HasModel(t *testing.T) {
 			if got != tt.want {
 				t.Errorf("Gollama.HasModel() = %v, want %v", got, tt.want)
 			}
+		})
+	}
+}
+
+func TestGollama_PullModel(t *testing.T) {
+	tests := []struct {
+		name    string
+		c       *Gollama
+		model   string
+		wantErr bool
+	}{
+		{
+			name:    "PullModel",
+			c:       New("llama3.2"),
+			model:   "opencoder:1.5b",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.c.PullModel(tt.model); (err != nil) != tt.wantErr {
+				t.Errorf("Gollama.PullModel() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			log.Fatalln(tt.c.HasModel(tt.model))
 		})
 	}
 }
