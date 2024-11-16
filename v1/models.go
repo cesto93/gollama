@@ -65,8 +65,6 @@ func (c *Gollama) ModelSize(model string) (int, error) {
 }
 
 func (c *Gollama) PullModel(model string) error {
-	fmt.Println("Pulling model", model)
-
 	type requestStr struct {
 		Model  string `json:"model"`
 		Stream bool   `json:"stream"`

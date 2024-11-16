@@ -42,6 +42,10 @@ func (c *Gollama) apiPost(path string, v interface{}, data interface{}) error {
 		Timeout: c.HTTPTimeout,
 	}
 
+	if path == "/api/pull" {
+		HTTPClient.Timeout = c.PullTimeout
+	}
+
 	resp, err := HTTPClient.Post(url, "application/json", bytes.NewBuffer(reqBytes))
 	if err != nil {
 		return err
