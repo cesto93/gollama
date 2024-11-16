@@ -3,16 +3,17 @@ package gollama
 type message struct {
 	Role    string   `json:"role"`
 	Content string   `json:"content"`
-	Images  []string `json:"images"`
+	Images  []string `json:"images,omitempty"`
 }
 
 type requestOptions struct {
 	Seed          int     `json:"seed"`
 	Temperature   float64 `json:"temperature"`
-	ContextLength int64   `json:"context_length"`
+	ContextLength int64   `json:"context_length,omitempty"`
 }
 
 type requestChat struct {
+	Stream   bool           `json:"stream"`
 	Model    string         `json:"model"`
 	Messages []message      `json:"messages"`
 	Options  requestOptions `json:"options"`

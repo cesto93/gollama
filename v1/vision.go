@@ -2,6 +2,7 @@ package gollama
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -39,10 +40,11 @@ func (c *Gollama) Vision(prompt string, images []string) (string, error) {
 	messages = append(messages, message{
 		Role:    "user",
 		Content: prompt,
-		Images:  images,
+		Images:  base64images,
 	})
 
 	req := requestChat{
+		Stream:   false,
 		Model:    c.ModelName,
 		Messages: messages,
 		Options: requestOptions{
@@ -55,11 +57,15 @@ func (c *Gollama) Vision(prompt string, images []string) (string, error) {
 		req.Options.ContextLength = c.ContextLength
 	}
 
+	fmt.Printf("%+v\n", req)
+
 	var resp responseChat
-	err := c.apiPost("/api/vision", &resp, req)
+	err := c.apiPost("/api/chat", &resp, req)
 	if err != nil {
 		return "", err
 	}
+
+	fmt.Printf("%+v\n", resp.Message)
 
 	response := resp.Message.Content
 

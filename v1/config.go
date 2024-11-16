@@ -23,6 +23,11 @@ const (
 	mimeJSON           = "application/json"
 )
 
+func (c *Gollama) SetHTTPTimeout(timeout time.Duration) *Gollama {
+	c.HTTPTimeout = timeout
+	return c
+}
+
 func (c *Gollama) SetSeed(seed int) *Gollama {
 	c.SeedOrNegative = seed
 	return c
