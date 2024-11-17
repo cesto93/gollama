@@ -5,15 +5,6 @@ import (
 )
 
 func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
-	base64VisionImages := make([]string, 0)
-	for _, image := range in.VisionImages {
-		base64image, err := base64EncodeFile(image)
-		if err != nil {
-			return nil, err
-		}
-		base64VisionImages = append(base64VisionImages, base64image)
-	}
-
 	var (
 		temperature float64
 		seed        = c.SeedOrNegative
@@ -22,6 +13,8 @@ func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 	if seed < 0 {
 		temperature = c.TemperatureIfNegativeSeed
 	}
+
+	contextLength := c.ContextLength
 
 	messages := []message{}
 	if c.SystemPrompt != "" {
@@ -36,6 +29,15 @@ func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 		Content: in.Prompt,
 	}
 
+	base64VisionImages := make([]string, 0)
+	for _, image := range in.VisionImages {
+		base64image, err := base64EncodeFile(image)
+		if err != nil {
+			return nil, err
+		}
+		base64VisionImages = append(base64VisionImages, base64image)
+	}
+
 	if len(base64VisionImages) > 0 {
 		userMessage.Images = base64VisionImages
 	}
@@ -47,8 +49,9 @@ func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 		Model:    c.ModelName,
 		Messages: messages,
 		Options: requestOptions{
-			Seed:        seed,
-			Temperature: temperature,
+			Seed:          seed,
+			Temperature:   temperature,
+			ContextLength: contextLength,
 		},
 	}
 
