@@ -6,15 +6,14 @@ import (
 
 func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 	var (
-		temperature float64
-		seed        = c.SeedOrNegative
+		temperature   float64
+		seed          = c.SeedOrNegative
+		contextLength = c.ContextLength
 	)
 
 	if seed < 0 {
 		temperature = c.TemperatureIfNegativeSeed
 	}
-
-	contextLength := c.ContextLength
 
 	messages := []message{}
 	if c.SystemPrompt != "" {
