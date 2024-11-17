@@ -52,6 +52,10 @@ func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 		},
 	}
 
+	if len(in.Tools) > 0 {
+		req.Tools = in.Tools
+	}
+
 	if c.ContextLength != 0 {
 		req.Options.ContextLength = c.ContextLength
 	}

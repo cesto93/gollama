@@ -16,33 +16,33 @@ type requestChat struct {
 	Model    string         `json:"model"`
 	Stream   bool           `json:"stream"`
 	Messages []message      `json:"messages"`
-	Tools    []requestTool  `json:"tools,omitempty"`
+	Tools    []GollamaTool  `json:"tools,omitempty"`
 	Options  requestOptions `json:"options"`
 }
 
 // Tool structs
 
-type requestToolProperty struct {
+type GollamaToolProperty struct {
 	Type        string   `json:"type"`
 	Description string   `json:"description"`
 	Enum        []string `json:"enum"`
 }
 
-type requestToolParameters struct {
+type GollamaToolParameters struct {
 	Type       string                         `json:"type"`
-	Properties map[string]requestToolProperty `json:"properties"`
+	Properties map[string]GollamaToolProperty `json:"properties"`
 	Required   []string                       `json:"required"`
 }
 
-type requestToolFunction struct {
+type GollamaToolFunction struct {
 	Name        string                `json:"name"`
 	Description string                `json:"description"`
-	Parameters  requestToolParameters `json:"parameters"`
+	Parameters  GollamaToolParameters `json:"parameters"`
 }
 
-type requestTool struct {
+type GollamaTool struct {
 	Type     string              `json:"type"`
-	Function requestToolFunction `json:"function"`
+	Function GollamaToolFunction `json:"function"`
 }
 
 // ResponseChat is the response from the Ollama API
@@ -70,8 +70,9 @@ type responseChat struct {
 // Input structs
 
 type GollamaInput struct {
-	Prompt       string   `json:"prompt"`
-	VisionImages []string `json:"vision_images,omitempty"`
+	Prompt       string        `json:"prompt"`
+	VisionImages []string      `json:"vision_images,omitempty"`
+	Tools        []GollamaTool `json:"tools,omitempty"`
 }
 
 // Output structs
