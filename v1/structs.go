@@ -87,7 +87,7 @@ type GollamaToolCall struct {
 
 type GollamaResponse struct {
 	Role           string            `json:"role"`
-	Response       string            `json:"response"`
+	Content        string            `json:"content"`
 	ToolCalls      []GollamaToolCall `json:"tool_calls"`
 	PromptTokens   int               `json:"prompt_tokens"`
 	ResponseTokens int               `json:"response_tokens"`

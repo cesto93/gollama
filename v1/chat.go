@@ -1,22 +1,17 @@
 package gollama
 
 import (
-	"errors"
 	"strings"
 )
 
-func (c *Gollama) Vision(in GollamaInput) (*GollamaResponse, error) {
-	if len(in.VisionImages) == 0 {
-		return nil, errors.New("no images provided")
-	}
-
-	base64images := make([]string, len(in.VisionImages))
-	for i, image := range in.VisionImages {
+func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
+	base64VisionImages := make([]string, 0)
+	for _, image := range in.VisionImages {
 		base64image, err := base64EncodeFile(image)
 		if err != nil {
 			return nil, err
 		}
-		base64images[i] = base64image
+		base64VisionImages = append(base64VisionImages, base64image)
 	}
 
 	var (
@@ -36,11 +31,16 @@ func (c *Gollama) Vision(in GollamaInput) (*GollamaResponse, error) {
 		})
 	}
 
-	messages = append(messages, message{
+	userMessage := message{
 		Role:    "user",
 		Content: in.Prompt,
-		Images:  base64images,
-	})
+	}
+
+	if len(base64VisionImages) > 0 {
+		userMessage.Images = base64VisionImages
+	}
+
+	messages = append(messages, userMessage)
 
 	req := requestChat{
 		Stream:   false,
@@ -64,14 +64,14 @@ func (c *Gollama) Vision(in GollamaInput) (*GollamaResponse, error) {
 
 	res := &GollamaResponse{
 		Role:           resp.Message.Role,
-		Response:       resp.Message.Content,
+		Content:        resp.Message.Content,
 		ToolCalls:      resp.Message.ToolCalls,
 		PromptTokens:   resp.PromptEvalCount,
 		ResponseTokens: resp.EvalCount,
 	}
 
 	if c.TrimSpace {
-		res.Response = strings.TrimSpace(res.Response)
+		res.Content = strings.TrimSpace(res.Content)
 	}
 
 	return res, nil
