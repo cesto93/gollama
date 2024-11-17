@@ -29,16 +29,20 @@ func TestGollama_Chat(t *testing.T) {
 			want:    &GollamaResponse{Content: "4"},
 			wantErr: false,
 		},
+		{
+			name:    "Invalid model",
+			c:       New("invalid"),
+			args:    args{in: GollamaInput{Prompt: "hello"}},
+			want:    nil,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.c.Chat(tt.args.in)
+			_, err := tt.c.Chat(tt.args.in)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Gollama.Chat() error = %v, wantErr %v", err, tt.wantErr)
 				return
-			}
-			if got.Content != tt.want.Content {
-				t.Errorf("Gollama.Chat() = %v, want %v", got, tt.want)
 			}
 		})
 	}

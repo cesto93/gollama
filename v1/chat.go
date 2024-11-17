@@ -1,6 +1,7 @@
 package gollama
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -66,6 +67,10 @@ func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 	err := c.apiPost("/api/chat", &resp, req)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.Model != c.ModelName {
+		return nil, fmt.Errorf("model don't found")
 	}
 
 	out := &GollamaResponse{
