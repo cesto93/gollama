@@ -2,20 +2,19 @@ package gollama
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 )
 
-func (c *Gollama) Vision(prompt string, images []string) (string, error) {
-	if len(images) == 0 {
-		return "", errors.New("no images provided")
+func (c *Gollama) Vision(in GollamaInput) (*GollamaResponse, error) {
+	if len(in.VisionImages) == 0 {
+		return nil, errors.New("no images provided")
 	}
 
-	base64images := make([]string, len(images))
-	for i, image := range images {
+	base64images := make([]string, len(in.VisionImages))
+	for i, image := range in.VisionImages {
 		base64image, err := base64EncodeFile(image)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 		base64images[i] = base64image
 	}
@@ -39,7 +38,7 @@ func (c *Gollama) Vision(prompt string, images []string) (string, error) {
 
 	messages = append(messages, message{
 		Role:    "user",
-		Content: prompt,
+		Content: in.Prompt,
 		Images:  base64images,
 	})
 
@@ -57,21 +56,23 @@ func (c *Gollama) Vision(prompt string, images []string) (string, error) {
 		req.Options.ContextLength = c.ContextLength
 	}
 
-	fmt.Printf("%+v\n", req)
-
 	var resp responseChat
 	err := c.apiPost("/api/chat", &resp, req)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	fmt.Printf("%+v\n", resp.Message)
-
-	response := resp.Message.Content
+	res := &GollamaResponse{
+		Role:           resp.Message.Role,
+		Response:       resp.Message.Content,
+		ToolCalls:      resp.Message.ToolCalls,
+		PromptTokens:   resp.PromptEvalCount,
+		ResponseTokens: resp.EvalCount,
+	}
 
 	if c.TrimSpace {
-		response = strings.TrimSpace(response)
+		res.Response = strings.TrimSpace(res.Response)
 	}
 
-	return response, nil
+	return res, nil
 }

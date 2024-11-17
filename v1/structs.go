@@ -48,8 +48,9 @@ type requestTool struct {
 // ResponseChat is the response from the Ollama API
 
 type responseMessage struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
+	Role      string            `json:"role"`
+	Content   string            `json:"content"`
+	ToolCalls []GollamaToolCall `json:"tool_calls"`
 }
 
 type responseChat struct {
@@ -90,5 +91,4 @@ type GollamaResponse struct {
 	ToolCalls      []GollamaToolCall `json:"tool_calls"`
 	PromptTokens   int               `json:"prompt_tokens"`
 	ResponseTokens int               `json:"response_tokens"`
-	Error          string            `json:"error"`
 }
