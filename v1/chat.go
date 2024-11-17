@@ -47,8 +47,8 @@ func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 		Model:    c.ModelName,
 		Messages: messages,
 		Options: requestOptions{
-			Seed:        seed,        // set to -1 to make it random
-			Temperature: temperature, // set to 0 together with a specific seed to make output reproducible
+			Seed:        seed,
+			Temperature: temperature,
 		},
 	}
 
