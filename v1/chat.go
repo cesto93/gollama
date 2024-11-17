@@ -68,7 +68,7 @@ func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 		return nil, err
 	}
 
-	res := &GollamaResponse{
+	out := &GollamaResponse{
 		Role:           resp.Message.Role,
 		Content:        resp.Message.Content,
 		ToolCalls:      resp.Message.ToolCalls,
@@ -77,8 +77,8 @@ func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 	}
 
 	if c.TrimSpace {
-		res.Content = strings.TrimSpace(res.Content)
+		out.Content = strings.TrimSpace(out.Content)
 	}
 
-	return res, nil
+	return out, nil
 }
