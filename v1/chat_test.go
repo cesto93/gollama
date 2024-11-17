@@ -22,6 +22,13 @@ func TestGollama_Chat(t *testing.T) {
 			want:    &GollamaResponse{Content: "There is a llama on the road."},
 			wantErr: false,
 		},
+		{
+			name:    "Math",
+			c:       New("llama3.2"),
+			args:    args{in: GollamaInput{Prompt: "what is 2 + 2? only answer in number"}},
+			want:    &GollamaResponse{Content: "4"},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
