@@ -1,6 +1,9 @@
 package gollama
 
-import "time"
+import (
+	"os"
+	"time"
+)
 
 type Gollama struct {
 	ServerAddr                string
@@ -46,4 +49,11 @@ func (c *Gollama) SetTemperature(temperature float64) *Gollama {
 func (c *Gollama) SetContextLength(contextLength int64) *Gollama {
 	c.ContextLength = contextLength
 	return c
+}
+
+func getEnv(key, defaultValue string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return defaultValue
 }
