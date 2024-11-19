@@ -39,10 +39,13 @@ func TestGollama_Chat(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := tt.c.Chat(tt.args.in)
+			got, err := tt.c.Chat(tt.args.in)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Gollama.Chat() error = %v, wantErr %v", err, tt.wantErr)
 				return
+			}
+			if got != nil && got.Content != tt.want.Content {
+				t.Errorf("Gollama.Chat() = %v, want %v", got, tt.want)
 			}
 		})
 	}
