@@ -19,7 +19,7 @@ func New(model string) *Gollama {
 	return &oc
 }
 
-func NewWithConfig(config *Gollama) *Gollama {
+func NewWithConfig(config Gollama) *Gollama {
 	oc := Gollama{
 		ServerAddr:                getEnv("OLLAMA_HOST", "http://localhost:11434"),
 		ModelName:                 getEnv("OLLAMA_MODEL", defaultModel),
@@ -31,35 +31,39 @@ func NewWithConfig(config *Gollama) *Gollama {
 		Verbose:                   getEnv("OLLAMA_VERBOSE", "false") == "true",
 	}
 
-	if config.ServerAddr != "" {
+	if oc.ServerAddr != config.ServerAddr {
 		oc.ServerAddr = config.ServerAddr
 	}
 
-	if config.ModelName != "" {
+	if oc.ModelName != config.ModelName {
 		oc.ModelName = config.ModelName
 	}
 
-	if config.SeedOrNegative != defaultFixedSeed {
+	if oc.SeedOrNegative != config.SeedOrNegative {
 		oc.SeedOrNegative = config.SeedOrNegative
 	}
 
-	if config.TemperatureIfNegativeSeed != 0.8 {
+	if oc.TemperatureIfNegativeSeed != config.TemperatureIfNegativeSeed {
 		oc.TemperatureIfNegativeSeed = config.TemperatureIfNegativeSeed
 	}
 
-	if config.PullTimeout != defaultPullTimeout {
+	if oc.PullTimeout != config.PullTimeout {
 		oc.PullTimeout = config.PullTimeout
 	}
 
-	if config.HTTPTimeout != defaultHTTPTimeout {
+	if oc.HTTPTimeout != config.HTTPTimeout {
 		oc.HTTPTimeout = config.HTTPTimeout
 	}
 
-	if config.TrimSpace != true {
+	if oc.TrimSpace != config.TrimSpace {
 		oc.TrimSpace = config.TrimSpace
 	}
 
-	if config.Verbose != false {
+	if oc.ContextLength != config.ContextLength {
+		oc.ContextLength = config.ContextLength
+	}
+
+	if oc.Verbose != config.Verbose {
 		oc.Verbose = config.Verbose
 	}
 
