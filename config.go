@@ -51,6 +51,11 @@ func (c *Gollama) SetContextLength(contextLength int64) *Gollama {
 	return c
 }
 
+func (c *Gollama) SetSystemPrompt(prompt string) *Gollama {
+	c.SystemPrompt = prompt
+	return c
+}
+
 func getEnv(key, defaultValue string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value

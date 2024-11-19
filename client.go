@@ -14,6 +14,7 @@ func New(model string) *Gollama {
 		HTTPTimeout:               defaultHTTPTimeout,
 		TrimSpace:                 true,
 		Verbose:                   getEnv("OLLAMA_VERBOSE", "false") == "true",
+		SystemPrompt:              "",
 	}
 
 	return &oc
@@ -29,6 +30,7 @@ func NewWithConfig(config Gollama) *Gollama {
 		HTTPTimeout:               defaultHTTPTimeout,
 		TrimSpace:                 true,
 		Verbose:                   getEnv("OLLAMA_VERBOSE", "false") == "true",
+		SystemPrompt:              "",
 	}
 
 	if oc.ServerAddr != config.ServerAddr {
@@ -65,6 +67,10 @@ func NewWithConfig(config Gollama) *Gollama {
 
 	if oc.Verbose != config.Verbose {
 		oc.Verbose = config.Verbose
+	}
+
+	if oc.SystemPrompt != config.SystemPrompt {
+		oc.SystemPrompt = config.SystemPrompt
 	}
 
 	return &oc
