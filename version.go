@@ -1,11 +1,7 @@
 package gollama
 
 func (c *Gollama) Version() (string, error) {
-	type responseStr struct {
-		Version string `json:"version"`
-	}
-
-	var resp responseStr
+	var resp versionResponse
 	c.apiGet("/api/version", &resp)
 
 	return resp.Version, nil

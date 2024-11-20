@@ -6,7 +6,7 @@ import (
 
 func TestGollama_Embedding(t *testing.T) {
 	type args struct {
-		in GollamaInput
+		in ChatInput
 	}
 	tests := []struct {
 		name    string
@@ -18,7 +18,7 @@ func TestGollama_Embedding(t *testing.T) {
 		{
 			name:    "Embedding",
 			c:       New("llama3.2"),
-			args:    args{in: GollamaInput{Prompt: "hello"}},
+			args:    args{in: ChatInput{Prompt: "hello"}},
 			wantLen: 3072,
 			wantErr: false,
 		},

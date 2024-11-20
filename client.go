@@ -1,5 +1,21 @@
 package gollama
 
+// New is a constructor for Gollama that takes a model name as an argument. Any
+// unset fields will be populated with default values.
+//
+// This is useful for cases where you want to create a Gollama with a specific
+// model name, but don't want to specify every single field.
+//
+// If the provided model name is empty, the default model name will be used.
+//
+// The following environment variables can be set to override the default values
+// of the fields:
+//
+// OLLAMA_HOST: the address of the Ollama server
+// OLLAMA_MODEL: the model name
+// OLLAMA_VERBOSE: whether to print debug information
+//
+// The returned Gollama can be used to call other methods on the Ollama API.
 func New(model string) *Gollama {
 	if len(model) == 0 {
 		model = defaultModel
@@ -20,6 +36,11 @@ func New(model string) *Gollama {
 	return &oc
 }
 
+// NewWithConfig is a constructor for Gollama that takes a pre-populated Gollama
+// as an argument. Any unset fields will be populated with default values.
+//
+// This is useful for cases where you want to create a Gollama with some custom
+// configuration, but don't want to specify every single field.
 func NewWithConfig(config Gollama) *Gollama {
 	oc := Gollama{
 		ServerAddr:                getEnv("OLLAMA_HOST", "http://localhost:11434"),

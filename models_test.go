@@ -1,7 +1,6 @@
 package gollama
 
 import (
-	"log"
 	"testing"
 )
 
@@ -83,8 +82,9 @@ func TestGollama_PullModel(t *testing.T) {
 			if err := tt.c.PullModel(tt.model); (err != nil) != tt.wantErr {
 				t.Errorf("Gollama.PullModel() error = %v, wantErr %v", err, tt.wantErr)
 			}
-
-			log.Fatalln(tt.c.HasModel(tt.model))
+			if r, _ := tt.c.HasModel(tt.model); !r {
+				t.Errorf("Gollama.PullModel() = is not downloaded")
+			}
 		})
 	}
 }

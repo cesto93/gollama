@@ -6,33 +6,33 @@ import (
 
 func TestGollama_Chat(t *testing.T) {
 	type args struct {
-		in GollamaInput
+		in ChatInput
 	}
 	tests := []struct {
 		name    string
 		c       *Gollama
 		args    args
-		want    *GollamaResponse
+		want    *ChatResponse
 		wantErr bool
 	}{
 		{
 			name:    "Vision",
 			c:       New("llama3.2-vision"),
-			args:    args{in: GollamaInput{Prompt: "what is on the road?", VisionImages: []string{"./test/road.png"}}},
-			want:    &GollamaResponse{Content: "There is a llama on the road."},
+			args:    args{in: ChatInput{Prompt: "what is on the road?", VisionImages: []string{"./test/road.png"}}},
+			want:    &ChatResponse{Content: "There is a llama on the road."},
 			wantErr: false,
 		},
 		{
 			name:    "Math",
 			c:       New("llama3.2"),
-			args:    args{in: GollamaInput{Prompt: "what is 2 + 2? only answer in number"}},
-			want:    &GollamaResponse{Content: "4"},
+			args:    args{in: ChatInput{Prompt: "what is 2 + 2? only answer in number"}},
+			want:    &ChatResponse{Content: "4"},
 			wantErr: false,
 		},
 		{
 			name:    "Invalid model",
 			c:       New("invalid"),
-			args:    args{in: GollamaInput{Prompt: "hello"}},
+			args:    args{in: ChatInput{Prompt: "hello"}},
 			want:    nil,
 			wantErr: true,
 		},

@@ -5,7 +5,22 @@ import (
 	"strings"
 )
 
-func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
+// Chat starts a conversation with the LLaMA model.
+//
+// The function will append the SystemPrompt to the conversation if it is set.
+//
+// The function will set the temperature to TemperatureIfNegativeSeed if the seed is negative.
+//
+// The SeedOrNegative, TemperatureIfNegativeSeed, ContextLength and TrimSpace fields of the Gollama object will be used
+// to set the seed, temperature, context length and whether to trim the output respectively.
+//
+// The function will also pass through the Tools field of the input to the API.
+//
+// The function will return the content of the message from the model, the content of the message will be trimmed if
+// TrimSpace is true.
+//
+// The function will return an error if the model is not found.
+func (c *Gollama) Chat(in ChatInput) (*ChatResponse, error) {
 	var (
 		temperature   float64
 		seed          = c.SeedOrNegative
@@ -16,15 +31,15 @@ func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 		temperature = c.TemperatureIfNegativeSeed
 	}
 
-	messages := []message{}
+	messages := []chatMessage{}
 	if c.SystemPrompt != "" {
-		messages = append(messages, message{
+		messages = append(messages, chatMessage{
 			Role:    "system",
 			Content: c.SystemPrompt,
 		})
 	}
 
-	userMessage := message{
+	userMessage := chatMessage{
 		Role:    "user",
 		Content: in.Prompt,
 	}
@@ -44,11 +59,11 @@ func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 
 	messages = append(messages, userMessage)
 
-	req := requestChat{
+	req := chatRequest{
 		Stream:   false,
 		Model:    c.ModelName,
 		Messages: messages,
-		Options: requestOptions{
+		Options: chatOptionsRequest{
 			Seed:          seed,
 			Temperature:   temperature,
 			ContextLength: contextLength,
@@ -63,7 +78,7 @@ func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 		req.Options.ContextLength = c.ContextLength
 	}
 
-	var resp responseChat
+	var resp chatResponse
 	err := c.apiPost("/api/chat", &resp, req)
 	if err != nil {
 		return nil, err
@@ -73,7 +88,7 @@ func (c *Gollama) Chat(in GollamaInput) (*GollamaResponse, error) {
 		return nil, fmt.Errorf("model don't found")
 	}
 
-	out := &GollamaResponse{
+	out := &ChatResponse{
 		Role:           resp.Message.Role,
 		Content:        resp.Message.Content,
 		ToolCalls:      resp.Message.ToolCalls,
