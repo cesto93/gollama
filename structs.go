@@ -1,5 +1,18 @@
 package gollama
 
+// Embedding
+
+type embedding struct {
+	Model  string `json:"model"`
+	Prompt string `json:"prompt"`
+}
+
+type responseEmbedding struct {
+	Embedding []float64 `json:"embedding"`
+}
+
+// Chat
+
 type message struct {
 	Role    string   `json:"role"`
 	Content string   `json:"content"`
