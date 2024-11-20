@@ -5,27 +5,38 @@ import (
 	"strings"
 )
 
-// Chat starts a conversation with the LLaMA model.
+type ChatOption interface{}
+
+// Chat generates a response to a prompt using the Ollama API.
 //
-// The function will append the SystemPrompt to the conversation if it is set.
+// The first argument is the prompt to generate a response to.
 //
-// The function will set the temperature to TemperatureIfNegativeSeed if the seed is negative.
+// The function takes a variable number of options as arguments. The options are:
+//   - A slice of strings representing the paths to images that should be passed as vision input.
+//   - A slice of Tool objects representing the tools that should be available to the model.
 //
-// The SeedOrNegative, TemperatureIfNegativeSeed, ContextLength and TrimSpace fields of the Gollama object will be used
-// to set the seed, temperature, context length and whether to trim the output respectively.
-//
-// The function will also pass through the Tools field of the input to the API.
-//
-// The function will return the content of the message from the model, the content of the message will be trimmed if
-// TrimSpace is true.
-//
-// The function will return an error if the model is not found.
-func (c *Gollama) Chat(in ChatInput) (*ChatResponse, error) {
+// The function returns a pointer to a ChatOuput object, which contains the response to the prompt,
+// as well as some additional information about the response. If an error occurs, the function
+// returns nil and an error.
+func (c *Gollama) Chat(prompt string, options ...ChatOption) (*ChatOuput, error) {
 	var (
 		temperature   float64
 		seed          = c.SeedOrNegative
 		contextLength = c.ContextLength
+		visionImages  = []string{}
+		tools         = []Tool{}
 	)
+
+	for _, option := range options {
+		switch opt := option.(type) {
+		case []string:
+			visionImages = opt
+		case []Tool:
+			tools = opt
+		default:
+			continue
+		}
+	}
 
 	if seed < 0 {
 		temperature = c.TemperatureIfNegativeSeed
@@ -41,11 +52,11 @@ func (c *Gollama) Chat(in ChatInput) (*ChatResponse, error) {
 
 	userMessage := chatMessage{
 		Role:    "user",
-		Content: in.Prompt,
+		Content: prompt,
 	}
 
 	base64VisionImages := make([]string, 0)
-	for _, image := range in.VisionImages {
+	for _, image := range visionImages {
 		base64image, err := base64EncodeFile(image)
 		if err != nil {
 			return nil, err
@@ -70,8 +81,8 @@ func (c *Gollama) Chat(in ChatInput) (*ChatResponse, error) {
 		},
 	}
 
-	if len(in.Tools) > 0 {
-		req.Tools = in.Tools
+	if len(tools) > 0 {
+		req.Tools = tools
 	}
 
 	if c.ContextLength != 0 {
@@ -88,7 +99,7 @@ func (c *Gollama) Chat(in ChatInput) (*ChatResponse, error) {
 		return nil, fmt.Errorf("model don't found")
 	}
 
-	out := &ChatResponse{
+	out := &ChatOuput{
 		Role:           resp.Message.Role,
 		Content:        resp.Message.Content,
 		ToolCalls:      resp.Message.ToolCalls,

@@ -6,10 +6,10 @@ package gollama
 // representing the embeddings of the input, or an error if something went wrong.
 //
 // The function will return an error if the model is not found.
-func (c *Gollama) Embedding(in ChatInput) ([]float64, error) {
+func (c *Gollama) Embedding(prompt string) ([]float64, error) {
 	req := embeddingsRequest{
 		Model:  c.ModelName,
-		Prompt: in.Prompt,
+		Prompt: prompt,
 	}
 
 	var resp embeddingsResponse

@@ -89,17 +89,9 @@ type ToolCall struct {
 	Function ToolCallFunction `json:"function"`
 }
 
-// Input structs
-
-type ChatInput struct {
-	Prompt       string   `json:"prompt"`
-	VisionImages []string `json:"vision_images,omitempty"`
-	Tools        []Tool   `json:"tools,omitempty"`
-}
-
 // Output structs
 
-type ChatResponse struct {
+type ChatOuput struct {
 	Role           string     `json:"role"`
 	Content        string     `json:"content"`
 	ToolCalls      []ToolCall `json:"tool_calls"`
