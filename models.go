@@ -89,14 +89,20 @@ func (c *Gollama) PullModel(model string) error {
 	return nil
 }
 
-func (c *Gollama) PullIfMissing(model string) error {
-	hasModel, err := c.HasModel(model)
-	if err != nil {
-		return err
+func (c *Gollama) PullIfMissing(model ...string) error {
+	if len(model) == 0 {
+		model = []string{c.ModelName}
 	}
 
-	if !hasModel {
-		return c.PullModel(model)
+	for _, m := range model {
+		hasModel, err := c.HasModel(m)
+		if err != nil {
+			return err
+		}
+
+		if !hasModel {
+			return c.PullModel(m)
+		}
 	}
 
 	return nil
