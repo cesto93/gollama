@@ -38,6 +38,7 @@ func main() {
 - Downloads model if missing
 - Chat with model
 - Generates embeddings with model
+- Get model details
 
 ### Functions
 
