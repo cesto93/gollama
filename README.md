@@ -30,3 +30,25 @@ func main() {
     fmt.Printf("\n%s\n", output.Content)
 }
 ```
+
+### Features
+
+- Supports Vision models
+- Supports Tools models
+- Downloads model if missing
+- Chat with model
+- Generates embeddings with model
+
+### Functions
+
+- `New(model string) *Gollama`
+- `NewWithConfig(config Gollama) *Gollama`
+- `Chat(prompt string, ...ChatOption) (*gollama.ChatOutput, error)`
+- `Embedding(prompt string) ([]float64, error)`
+- `ListModels() ([]ModelInfo, error)`
+- `HasModel(model string) (bool, error)`
+- `ModelSize(model string) (int, error)`
+- `PullModel(model string) error`
+- `PullIfMissing(model ...string) error`
+- `GetDetails(model ...string) ([]ModelDetails, error)`
+- `Version() (string, error)`
