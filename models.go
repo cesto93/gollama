@@ -107,3 +107,27 @@ func (c *Gollama) PullIfMissing(model ...string) error {
 
 	return nil
 }
+
+func (c *Gollama) GetDetails(model ...string) ([]ModelDetails, error) {
+	if len(model) == 0 {
+		model = []string{c.ModelName}
+	}
+
+	ret := make([]ModelDetails, 0)
+
+	for _, m := range model {
+		req := getDetails{
+			Model: m,
+		}
+
+		var resp ModelDetails
+		err := c.apiPost("/api/show", &resp, req)
+		if err != nil {
+			return nil, err
+		}
+
+		ret = append(ret, resp)
+	}
+
+	return ret, nil
+}
