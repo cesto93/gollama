@@ -31,6 +31,22 @@ func TestGollama_Chat(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "Tool",
+			c:    New("llama3.2"),
+			args: args{Prompt: "what is the current date?", Options: []Tool{
+				{Type: "date", Function: ToolFunction{
+					Name: "date", Parameters: ToolParameters{
+						Type: "date",
+						Properties: map[string]ToolProperty{
+							"date": {
+								Type: "string",
+							},
+						},
+					}}}}},
+			want:    &ChatOuput{Content: ""}, // has to be empty
+			wantErr: false,
+		},
+		{
 			name:    "Invalid model",
 			c:       New("invalid"),
 			args:    args{Prompt: "hello"},
