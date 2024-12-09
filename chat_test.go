@@ -1,6 +1,7 @@
 package gollama
 
 import (
+	"encoding/json"
 	"testing"
 )
 
@@ -9,48 +10,58 @@ func TestGollama_Chat(t *testing.T) {
 		Prompt  string
 		Options interface{}
 	}
+	type outs struct {
+		wantContent  *ChatOuput
+		wantToolJson string
+	}
 	tests := []struct {
 		name    string
 		c       *Gollama
 		args    args
-		want    *ChatOuput
+		want    *outs
 		wantErr bool
 	}{
 		{
 			name:    "Vision",
 			c:       New("llama3.2-vision"),
 			args:    args{Prompt: "what is on the road?", Options: []string{"./test/road.png"}},
-			want:    &ChatOuput{Content: "There is a llama on the road."},
+			want:    &outs{wantContent: &ChatOuput{Content: "There is a llama on the road."}},
 			wantErr: false,
 		},
 		{
 			name:    "Math",
 			c:       New("llama3.2"),
 			args:    args{Prompt: "what is 2 + 2? only answer in number"},
-			want:    &ChatOuput{Content: "4"},
+			want:    &outs{wantContent: &ChatOuput{Content: "4"}},
 			wantErr: false,
 		},
 		{
 			name: "Tool",
 			c:    New("llama3.2"),
-			args: args{Prompt: "what is the current date?", Options: []Tool{
-				{Type: "date", Function: ToolFunction{
-					Name: "date", Parameters: ToolParameters{
-						Type: "date",
+			args: args{Prompt: "what is the weather in New York?", Options: []Tool{
+				{Type: "function", Function: ToolFunction{
+					Name:        "get_current_weather",
+					Description: "Get the current weather in a specific city",
+					Parameters: ToolParameters{
+						Type: "object",
 						Properties: map[string]ToolProperty{
-							"date": {
-								Type: "string",
+							"city": {
+								Type:        "string",
+								Description: "The name of the city",
 							},
 						},
-					}}}}},
-			want:    &ChatOuput{Content: ""}, // has to be empty
+						Required: []string{"city"},
+					}},
+				}},
+			},
+			want:    &outs{wantContent: &ChatOuput{Content: ""}, wantToolJson: `[{"function":{"name":"get_current_weather","arguments":{"city":"New York"}}}]`},
 			wantErr: false,
 		},
 		{
 			name:    "Invalid model",
 			c:       New("invalid"),
 			args:    args{Prompt: "hello"},
-			want:    nil,
+			want:    &outs{wantContent: &ChatOuput{Content: ""}},
 			wantErr: true,
 		},
 	}
@@ -62,8 +73,17 @@ func TestGollama_Chat(t *testing.T) {
 				t.Errorf("Gollama.Chat() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != nil && got.Content != tt.want.Content {
+
+			if got != nil && tt.want != nil &&
+				got.Content != tt.want.wantContent.Content {
 				t.Errorf("Gollama.Chat() = %v, want %v", got, tt.want)
+			}
+
+			if got != nil && tt.want != nil && tt.want.wantToolJson != "" {
+				toolJson, _ := json.Marshal(got.ToolCalls)
+				if string(toolJson) != tt.want.wantToolJson {
+					t.Errorf("Gollama.Chat() tool calls = %v, want %v", string(toolJson), tt.want.wantToolJson)
+				}
 			}
 		})
 	}
