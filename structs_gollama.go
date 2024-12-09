@@ -55,24 +55,29 @@ type ModelDetails struct {
 	ModifiedAt string `json:"modified_at"`
 }
 
-// Tool structs
+// Format structs
 
-type ToolProperty struct {
-	Type        string   `json:"type"`
-	Description string   `json:"description"`
-	Enum        []string `json:"enum"`
+type ItemProperty struct {
+	Type string `json:"type"`
 }
 
-type ToolParameters struct {
-	Type       string                  `json:"type"`
-	Properties map[string]ToolProperty `json:"properties"`
-	Required   []string                `json:"required"`
+type FormatProperty struct {
+	Type        string       `json:"type"`
+	Description string       `json:"description,omitempty"`
+	Enum        []string     `json:"enum,omitempty"`
+	Items       ItemProperty `json:"items,omitempty"`
+}
+
+type StructuredFormat struct {
+	Type       string                    `json:"type"`
+	Properties map[string]FormatProperty `json:"properties"`
+	Required   []string                  `json:"required,omitempty"`
 }
 
 type ToolFunction struct {
-	Name        string         `json:"name"`
-	Description string         `json:"description"`
-	Parameters  ToolParameters `json:"parameters"`
+	Name        string           `json:"name"`
+	Description string           `json:"description,omitempty"`
+	Parameters  StructuredFormat `json:"parameters"`
 }
 
 type Tool struct {
