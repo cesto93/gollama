@@ -11,8 +11,9 @@ func TestGollama_Chat(t *testing.T) {
 		Options interface{}
 	}
 	type outs struct {
-		wantContent  *ChatOuput
-		wantToolJson string
+		wantContent    *ChatOuput
+		wantToolJson   string
+		wantFormatJson string
 	}
 	tests := []struct {
 		name    string
@@ -24,7 +25,7 @@ func TestGollama_Chat(t *testing.T) {
 		{
 			name:    "Vision",
 			c:       New("llama3.2-vision"),
-			args:    args{Prompt: "what is on the road?", Options: []string{"./test/road.png"}},
+			args:    args{Prompt: "what is on the road?", Options: []PromptImage{{Filename: "./test/road.png"}}},
 			want:    &outs{wantContent: &ChatOuput{Content: "There is a llama on the road."}},
 			wantErr: false,
 		},
@@ -33,6 +34,26 @@ func TestGollama_Chat(t *testing.T) {
 			c:       New("llama3.2"),
 			args:    args{Prompt: "what is 2 + 2? only answer in number"},
 			want:    &outs{wantContent: &ChatOuput{Content: "4"}},
+			wantErr: false,
+		},
+		{
+			name: "JSON Output",
+			c:    New("llama3.2"),
+			args: args{Prompt: "Tell me about Argentina. Response in JSON", Options: StructuredFormat{
+				Type: "object",
+				Properties: map[string]FormatProperty{
+					"capital": {
+						Type: "string",
+					},
+					"language": {
+						Type: "array",
+						Items: ItemProperty{
+							Type: "string",
+						},
+					}},
+				Required: []string{"capital", "language"},
+			}},
+			want:    &outs{wantFormatJson: `{"capital":"Buenos Aires","language":["Spanish"]}`},
 			wantErr: false,
 		},
 		{
@@ -75,17 +96,31 @@ func TestGollama_Chat(t *testing.T) {
 				return
 			}
 
+			// log.Printf("got: %+v", got)
+
 			if got != nil && tt.want != nil &&
+				tt.want.wantFormatJson != "" {
+				var data map[string]interface{}
+				json.Unmarshal([]byte(got.Content), &data)
+				jsonString, _ := json.Marshal(data)
+				if string(jsonString) != tt.want.wantFormatJson {
+					t.Errorf("Gollama.Chat() = %v, want %v", string(jsonString), tt.want.wantFormatJson)
+				}
+			}
+
+			if got != nil && tt.want != nil && tt.want.wantContent != nil &&
 				got.Content != tt.want.wantContent.Content {
 				t.Errorf("Gollama.Chat() = %v, want %v", got, tt.want)
 			}
 
-			if got != nil && tt.want != nil && tt.want.wantToolJson != "" {
+			if got != nil && tt.want != nil && tt.want.wantContent != nil &&
+				tt.want.wantToolJson != "" {
 				toolJson, _ := json.Marshal(got.ToolCalls)
 				if string(toolJson) != tt.want.wantToolJson {
 					t.Errorf("Gollama.Chat() tool calls = %v, want %v", string(toolJson), tt.want.wantToolJson)
 				}
 			}
+
 		})
 	}
 }

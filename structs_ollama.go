@@ -57,7 +57,8 @@ type chatRequest struct {
 	Model    string             `json:"model"`
 	Stream   bool               `json:"stream"`
 	Messages []chatMessage      `json:"messages"`
-	Tools    []Tool             `json:"tools,omitempty"`
+	Tools    *[]Tool            `json:"tools,omitempty"`
+	Format   *StructuredFormat  `json:"format,omitempty"`
 	Options  chatOptionsRequest `json:"options"`
 }
 

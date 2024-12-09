@@ -23,16 +23,19 @@ func (c *Gollama) Chat(prompt string, options ...ChatOption) (*ChatOuput, error)
 		temperature   float64
 		seed          = c.SeedOrNegative
 		contextLength = c.ContextLength
-		visionImages  = []string{}
+		promptImages  = []PromptImage{}
 		tools         = []Tool{}
+		format        = StructuredFormat{}
 	)
 
 	for _, option := range options {
 		switch opt := option.(type) {
-		case []string:
-			visionImages = opt
+		case []PromptImage:
+			promptImages = opt
 		case []Tool:
 			tools = opt
+		case StructuredFormat:
+			format = opt
 		default:
 			continue
 		}
@@ -56,8 +59,8 @@ func (c *Gollama) Chat(prompt string, options ...ChatOption) (*ChatOuput, error)
 	}
 
 	base64VisionImages := make([]string, 0)
-	for _, image := range visionImages {
-		base64image, err := base64EncodeFile(image)
+	for _, image := range promptImages {
+		base64image, err := base64EncodeFile(image.Filename)
 		if err != nil {
 			return nil, err
 		}
@@ -82,12 +85,19 @@ func (c *Gollama) Chat(prompt string, options ...ChatOption) (*ChatOuput, error)
 	}
 
 	if len(tools) > 0 {
-		req.Tools = tools
+		req.Tools = &tools
+	}
+
+	if len(format.Properties) > 0 {
+		fmt.Println("Adding format!")
+		req.Format = &format
 	}
 
 	if c.ContextLength != 0 {
 		req.Options.ContextLength = c.ContextLength
 	}
+
+	fmt.Printf("Chat request : %+v\n", req)
 
 	var resp chatResponse
 	err := c.apiPost("/api/chat", &resp, req)

@@ -57,6 +57,10 @@ type ModelDetails struct {
 
 // Format structs
 
+type PromptImage struct {
+	Filename string `json:"filename"`
+}
+
 type ItemProperty struct {
 	Type string `json:"type"`
 }

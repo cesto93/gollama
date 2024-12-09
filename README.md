@@ -33,8 +33,9 @@ func main() {
 
 ### Features
 
-- Supports Vision models
-- Supports Tools models
+- Support Vision models
+- Support Tools models
+- Support Structured format
 - Downloads model if missing
 - Chat with model
 - Generates embeddings with model
