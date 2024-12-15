@@ -89,7 +89,6 @@ func (c *Gollama) Chat(prompt string, options ...ChatOption) (*ChatOuput, error)
 	}
 
 	if len(format.Properties) > 0 {
-		fmt.Println("Adding format!")
 		req.Format = &format
 	}
 
@@ -97,7 +96,7 @@ func (c *Gollama) Chat(prompt string, options ...ChatOption) (*ChatOuput, error)
 		req.Options.ContextLength = c.ContextLength
 	}
 
-	fmt.Printf("Chat request : %+v\n", req)
+	// fmt.Printf("Chat request : %+v\n", req)
 
 	var resp chatResponse
 	err := c.apiPost("/api/chat", &resp, req)

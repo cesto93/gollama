@@ -36,3 +36,38 @@ func TestGollama_Embedding(t *testing.T) {
 		})
 	}
 }
+
+func TestCosenoSimilarity(t *testing.T) {
+	type args struct {
+		vector1 []float64
+		vector2 []float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{
+			name: "CosenoSimilarity",
+			args: args{vector1: []float64{1, 2, 3}, vector2: []float64{4, 5, 6}},
+			want: 0.9746318461970762,
+		},
+		{
+			name: "CosenoSimilarity",
+			args: args{vector1: []float64{1, 1, 1}, vector2: []float64{1, 1, 1}},
+			want: 1.0000000000000002,
+		},
+		{
+			name: "CosenoSimilarity",
+			args: args{vector1: []float64{1, 0, 0}, vector2: []float64{0, 1, 0}},
+			want: 0.0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CosenoSimilarity(tt.args.vector1, tt.args.vector2); got != tt.want {
+				t.Errorf("CosenoSimilarity() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
