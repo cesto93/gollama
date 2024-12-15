@@ -17,7 +17,7 @@ func main() {
 	prompt := "what is the capital of Argentina?"
 
 	type Capital struct {
-		Capital string `json:"capital",required="true"`
+		Capital string `required:"true"`
 	}
 
 	option, _ := gollama.StructToStructuredFormat(Capital{})
