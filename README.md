@@ -51,14 +51,16 @@ func main() {
 
 ### Functions
 
-- `New(model string) *Gollama`
-- `NewWithConfig(config Gollama) *Gollama`
-- `Chat(prompt string, ...ChatOption) (*gollama.ChatOutput, error)`
-- `Embedding(prompt string) ([]float64, error)`
-- `ListModels() ([]ModelInfo, error)`
-- `HasModel(model string) (bool, error)`
-- `ModelSize(model string) (int, error)`
-- `PullModel(model string) error`
-- `PullIfMissing(model ...string) error`
-- `GetDetails(model ...string) ([]ModelDetails, error)`
-- `Version() (string, error)`
+- `New(model string) *Gollama` - Create a new Gollama
+- `NewWithConfig(config Gollama) *Gollama` - Create a new Gollama with a pre-populated config
+- `Chat(prompt string, ...ChatOption) (*gollama.ChatOutput, error)` - Generate a response
+- `Embedding(prompt string) ([]float64, error)` - Generate embeddings
+- `ListModels() ([]ModelInfo, error)` - List models available on ollama
+- `HasModel(model string) (bool, error)` - Check if model is available
+- `ModelSize(model string) (int, error)` - Get model size from ollama
+- `PullModel(model string) error` - Pull model
+- `PullIfMissing(model ...string) error` - Pull model if missing
+- `GetDetails(model ...string) ([]ModelDetails, error)` - Get model details from ollama
+- `Version() (string, error)` - Get ollama version
+- `StructToStructuredFormat(interface{}) (StructuredFormat, error)` - Converts a Go struct to a Gollama structured format
+- `CosenoSimilarity(vector1, vector2 []float64) float64` - Calculates the cosine similarity between two vectors
