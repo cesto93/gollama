@@ -10,6 +10,7 @@ func StructToStructuredFormat(s interface{}) (StructuredFormat, error) {
 	structType := structValue.Type()
 
 	properties := make(map[string]FormatProperty)
+	required := make([]string, 0)
 
 	for i := 0; i < structType.NumField(); i++ {
 		field := structType.Field(i)
@@ -30,12 +31,17 @@ func StructToStructuredFormat(s interface{}) (StructuredFormat, error) {
 			}
 		}
 
+		if field.Tag.Get("required") == "true" {
+			required = append(required, field.Name)
+		}
+
 		properties[field.Name] = property
 	}
 
 	return StructuredFormat{
 		Type:       "object",
 		Properties: properties,
+		Required:   required,
 	}, nil
 
 }

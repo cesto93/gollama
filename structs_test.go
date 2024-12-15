@@ -11,9 +11,9 @@ func TestStructToStructuredFormat(t *testing.T) {
 	}
 
 	type myStruct struct {
-		content string
-		value   bool  `description:"test value"`
-		list    []int `description:"test list"`
+		content string `required:"true"`
+		value   bool   `description:"test value"`
+		list    []int  `description:"test list"`
 	}
 
 	tests := []struct {
@@ -29,7 +29,7 @@ func TestStructToStructuredFormat(t *testing.T) {
 				"content": {Type: "string", Description: ""},
 				"value":   {Type: "boolean", Description: "test value"},
 				"list":    {Type: "array", Description: "test list", Items: ItemProperty{Type: "integer"}},
-			}},
+			}, Required: []string{"content"}},
 			wantErr: false,
 		},
 	}
