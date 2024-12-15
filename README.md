@@ -5,6 +5,7 @@ Easy Ollama package for Golang
 
 > go get -u github.com/jonathanhecl/gollama
 
+
 ```go
 package main
 
@@ -21,15 +22,17 @@ func main() {
 		fmt.Println("Error:", err)
 		return
 	}
+
 	prompt := "what is the capital of Argentina?"
-	option := gollama.StructuredFormat{
-		Type: "object",
-		Properties: map[string]gollama.FormatProperty{
-			"capital": {
-				Type: "string",
-			}},
-		Required: []string{"capital"},
+
+	type Capital struct {
+		Capital string `json:"capital",required="true"`
 	}
+
+	option, _ := gollama.StructToStructuredFormat(Capital{})
+
+	fmt.Printf("Option: %+v\n", option)
+
 	output, err := g.Chat(prompt, option)
 	if err != nil {
 		fmt.Println("Error:", err)
