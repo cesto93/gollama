@@ -30,8 +30,12 @@ func (c *Gollama) Chat(prompt string, options ...ChatOption) (*ChatOuput, error)
 
 	for _, option := range options {
 		switch opt := option.(type) {
+		case PromptImage:
+			promptImages = append(promptImages, opt)
 		case []PromptImage:
 			promptImages = opt
+		case Tool:
+			tools = append(tools, opt)
 		case []Tool:
 			tools = opt
 		case StructuredFormat:

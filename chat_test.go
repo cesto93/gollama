@@ -25,7 +25,7 @@ func TestGollama_Chat(t *testing.T) {
 		{
 			name:    "Vision",
 			c:       New("llama3.2-vision"),
-			args:    args{Prompt: "what is on the road?", Options: []PromptImage{{Filename: "./test/road.png"}}},
+			args:    args{Prompt: "what is on the road?", Options: PromptImage{Filename: "./test/road.png"}},
 			want:    &outs{wantContent: &ChatOuput{Content: "There is a llama on the road."}},
 			wantErr: false,
 		},
