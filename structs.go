@@ -20,6 +20,11 @@ func StructToStructuredFormat(s interface{}) (StructuredFormat, error) {
 			return StructuredFormat{}, err
 		}
 
+		fieldName := field.Name
+		if field.Tag.Get("json") != "" {
+			fieldName = field.Tag.Get("json")
+		}
+
 		property := FormatProperty{
 			Type:        strType,
 			Description: field.Tag.Get("description"),
@@ -32,10 +37,10 @@ func StructToStructuredFormat(s interface{}) (StructuredFormat, error) {
 		}
 
 		if field.Tag.Get("required") == "true" {
-			required = append(required, field.Name)
+			required = append(required, fieldName)
 		}
 
-		properties[field.Name] = property
+		properties[fieldName] = property
 	}
 
 	return StructuredFormat{

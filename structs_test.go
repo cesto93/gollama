@@ -11,9 +11,9 @@ func TestStructToStructuredFormat(t *testing.T) {
 	}
 
 	type myStruct struct {
-		content string `required:"true"`
-		value   bool   `description:"test value"`
-		list    []int  `description:"test list"`
+		Content string `json:"content" required:"true"`
+		Value   bool   `json:"value" description:"test value"`
+		List    []int  `json:"list" description:"test list"`
 	}
 
 	tests := []struct {
@@ -41,8 +41,8 @@ func TestStructToStructuredFormat(t *testing.T) {
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Logf("%+v", got)
-				t.Logf("%+v", tt.want)
+				t.Logf("GOT: %+v", got)
+				t.Logf("WANT: %+v", tt.want)
 				t.Errorf("StructToStructuredFormat() = %v, want %v", got, tt.want)
 			}
 		})
