@@ -20,6 +20,10 @@ func StructToStructuredFormat(s interface{}) (StructuredFormat, error) {
 			return StructuredFormat{}, err
 		}
 
+		if field.Tag.Get("ignored") == "true" {
+			continue
+		}
+
 		fieldName := field.Name
 		if field.Tag.Get("json") != "" {
 			fieldName = field.Tag.Get("json")

@@ -12,6 +12,7 @@ func TestStructToStructuredFormat(t *testing.T) {
 
 	type myStruct struct {
 		Content string `json:"content" required:"true"`
+		Ignored string `ignored:"true"`
 		Value   bool   `json:"value" description:"test value"`
 		List    []int  `json:"list" description:"test list"`
 	}
