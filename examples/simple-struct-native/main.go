@@ -14,10 +14,11 @@ func main() {
 		return
 	}
 
-	prompt := "what is the capital of Argentina?"
+	prompt := "what is the capital of Argentina? and how many people live there?"
 
 	type Capital struct {
-		Capital string `required:"true"`
+		Capital    string `json:"capital" required:"true" description:"the capital of a country"`
+		Population string `json:"population" required:"true" description:"how many people live in a city"`
 	}
 
 	option, _ := gollama.StructToStructuredFormat(Capital{})
