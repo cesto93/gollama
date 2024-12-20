@@ -59,7 +59,7 @@ func TestGollama_Chat(t *testing.T) {
 		{
 			name: "Tool",
 			c:    New("llama3.2"),
-			args: args{Prompt: "what is the weather in New York?", Options: []Tool{{
+			args: args{Prompt: "what is the weather in New York?", Options: Tool{
 				Type: "function",
 				Function: ToolFunction{
 					Name:        "get_current_weather",
@@ -74,7 +74,7 @@ func TestGollama_Chat(t *testing.T) {
 						},
 						Required: []string{"city"},
 					}},
-			}},
+			},
 			},
 			want:    &outs{wantContent: &ChatOuput{Content: ""}, wantToolJson: `[{"function":{"name":"get_current_weather","arguments":{"city":"New York"}}}]`},
 			wantErr: false,
@@ -120,7 +120,6 @@ func TestGollama_Chat(t *testing.T) {
 					t.Errorf("Gollama.Chat() tool calls = %v, want %v", string(toolJson), tt.want.wantToolJson)
 				}
 			}
-
 		})
 	}
 }
