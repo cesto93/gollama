@@ -100,8 +100,6 @@ func (c *Gollama) Chat(prompt string, options ...ChatOption) (*ChatOuput, error)
 		req.Options.ContextLength = c.ContextLength
 	}
 
-	// fmt.Printf("Chat request : %+v\n", req)
-
 	var resp chatResponse
 	err := c.apiPost("/api/chat", &resp, req)
 	if err != nil {

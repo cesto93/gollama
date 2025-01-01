@@ -64,6 +64,9 @@ func (c *Gollama) apiPost(path string, v interface{}, data interface{}) error {
 
 	reqBytes, err := json.Marshal(data)
 	if err != nil {
+		if c.Verbose {
+			fmt.Printf("Failed to marshal request data: %s\n", err)
+		}
 		return err
 	}
 
@@ -77,9 +80,16 @@ func (c *Gollama) apiPost(path string, v interface{}, data interface{}) error {
 
 	resp, err := HTTPClient.Post(url, "application/json", bytes.NewBuffer(reqBytes))
 	if err != nil {
+		if c.Verbose {
+			fmt.Printf("Failed to send request: %s\n", err)
+		}
 		return err
 	}
 	defer resp.Body.Close()
+
+	if c.Verbose {
+		fmt.Printf("Response status code: %d\n", resp.StatusCode)
+	}
 
 	return json.NewDecoder(resp.Body).Decode(v)
 }
