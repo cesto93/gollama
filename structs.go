@@ -1,9 +1,24 @@
 package gollama
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
+	"strings"
 )
+
+func (o ChatOuput) DecodeContent(v interface{}) error {
+	content := o.Content
+	content = strings.TrimPrefix(content, "```")
+	content = strings.TrimSuffix(content, "```")
+
+	err := json.Unmarshal([]byte(content), v)
+	if err != nil {
+		return fmt.Errorf("error decoding JSON: %w", err)
+	}
+
+	return nil
+}
 
 func StructToStructuredFormat(s interface{}) (StructuredFormat, error) {
 	structValue := reflect.ValueOf(s)
