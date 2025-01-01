@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 )
@@ -87,9 +88,32 @@ func (c *Gollama) apiPost(path string, v interface{}, data interface{}) error {
 	}
 	defer resp.Body.Close()
 
-	if c.Verbose {
-		fmt.Printf("Response status code: %d\n", resp.StatusCode)
+	var bodyBytes []byte
+	bodyBytes, err = io.ReadAll(resp.Body)
+	if err != nil {
+		if c.Verbose {
+			fmt.Println("Failed to read response body error:", err)
+		}
+		return err
 	}
 
-	return json.NewDecoder(resp.Body).Decode(v)
+	resp.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+
+	err = json.NewDecoder(resp.Body).Decode(v)
+	if err != nil {
+		if c.Verbose {
+			fmt.Printf("Failed to unmarshal response body: %s\n", err)
+		}
+		return err
+	}
+
+	if c.Verbose {
+		if bodyBytes != nil {
+			fmt.Printf("Response body: %s\n", string(bodyBytes))
+		} else {
+			fmt.Println("Response body logging skipped due to error or disabled verbose mode.")
+		}
+	}
+
+	return nil
 }

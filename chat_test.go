@@ -96,7 +96,7 @@ func TestGollama_Chat(t *testing.T) {
 				return
 			}
 
-			// log.Printf("got: %+v", got)
+			// log.Fatalf("got: %+v", got)
 
 			if got != nil && tt.want != nil &&
 				tt.want.wantFormatJson != "" {
