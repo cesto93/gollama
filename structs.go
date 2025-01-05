@@ -18,7 +18,6 @@ func (o ChatOuput) DecodeContent(v interface{}) error {
 
 	content := ""
 	if len(match) > 1 {
-		// El JSON está en el segundo grupo de captura
 		content = match[1]
 	} else {
 		return fmt.Errorf("no JSON content found in content")

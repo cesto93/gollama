@@ -68,7 +68,13 @@ func TestChatOuput_DecodeContent(t *testing.T) {
 		},
 		{
 			name:    "DecodeContent valid json",
-			o:       ChatOuput{Content: "random text\n```\n{\"content\":\"hello\"}\n```"},
+			o:       ChatOuput{Content: "```\n{\"content\":\"hello\"}\n```"},
+			args:    args{v: &ChatOuput{}},
+			wantErr: false,
+		},
+		{
+			name:    "DecodeContent valid json on text",
+			o:       ChatOuput{Content: "random text before\n```\n{\"content\":\"hello\"}\n```\nrandom text after"},
 			args:    args{v: &ChatOuput{}},
 			wantErr: false,
 		},
