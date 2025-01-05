@@ -4,26 +4,29 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"regexp"
+	"strings"
 )
 
 func (o ChatOuput) DecodeContent(v interface{}) error {
-
 	if o.Content == "" {
 		return fmt.Errorf("content is empty")
 	}
 
-	re := regexp.MustCompile("```\\s*(\\{.*?\\})\\s*```")
-	matches := re.FindAllStringSubmatch(o.Content, -1)
+	blocks := strings.Split(o.Content, "```")
 
-	content := ""
-	if len(matches) > 0 {
-		content = matches[len(matches)-1][1]
-	} else {
-		return fmt.Errorf("no JSON content found in content")
+	var lastJSON string
+	for _, block := range blocks {
+		block = strings.TrimSpace(block)
+		if strings.HasPrefix(block, "{") && strings.HasSuffix(block, "}") {
+			lastJSON = block
+		}
 	}
 
-	err := json.Unmarshal([]byte(content), v)
+	if lastJSON == "" {
+		return fmt.Errorf("no JSON found in content")
+	}
+
+	err := json.Unmarshal([]byte(lastJSON), v)
 	if err != nil {
 		return fmt.Errorf("error decoding JSON: %w", err)
 	}
