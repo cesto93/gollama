@@ -18,7 +18,7 @@ func (o ChatOuput) DecodeContent(v interface{}) error {
 
 	content := ""
 	if len(match) > 1 {
-		content = match[1]
+		content = match[len(match)-1]
 	} else {
 		return fmt.Errorf("no JSON content found in content")
 	}

@@ -78,6 +78,12 @@ func TestChatOuput_DecodeContent(t *testing.T) {
 			args:    args{v: &ChatOuput{}},
 			wantErr: false,
 		},
+		{
+			name:    "DecodeContent valid json on text get the last one",
+			o:       ChatOuput{Content: "random text before\n```\n{\"content\":\"hello\"}\n```\nrandom text after ```\n{\"content\":\"last\"}\n```"},
+			args:    args{v: &ChatOuput{}},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
