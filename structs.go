@@ -13,7 +13,7 @@ func (o ChatOuput) DecodeContent(v interface{}) error {
 		return fmt.Errorf("content is empty")
 	}
 
-	re := regexp.MustCompile("```\\s*(\\{.*?\\})\\s*```")
+	re := regexp.MustCompile("```\\n({.*})\\n```")
 	match := re.FindStringSubmatch(o.Content)
 
 	content := ""
