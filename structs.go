@@ -4,13 +4,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"strings"
+	"regexp"
 )
 
 func (o ChatOuput) DecodeContent(v interface{}) error {
-	content := o.Content
-	content = strings.TrimPrefix(content, "```")
-	content = strings.TrimSuffix(content, "```")
+
+	if o.Content == "" {
+		return fmt.Errorf("content is empty")
+	}
+
+	re := regexp.MustCompile("```\\s*(\\{.*?\\})\\s*```")
+	match := re.FindStringSubmatch(o.Content)
+
+	content := ""
+	if len(match) > 1 {
+		// El JSON está en el segundo grupo de captura
+		content = match[1]
+	} else {
+		return fmt.Errorf("no JSON content found in content")
+	}
 
 	err := json.Unmarshal([]byte(content), v)
 	if err != nil {
