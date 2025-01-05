@@ -51,44 +51,51 @@ func TestStructToStructuredFormat(t *testing.T) {
 }
 
 func TestChatOuput_DecodeContent(t *testing.T) {
-	type args struct {
-		v interface{}
+	type wantResp struct {
+		Content string `json:"content"`
 	}
 	tests := []struct {
-		name    string
-		o       ChatOuput
-		args    args
-		wantErr bool
+		name     string
+		o        ChatOuput
+		wantResp wantResp
+		wantErr  bool
 	}{
 		{
-			name:    "DecodeContent invalid",
-			o:       ChatOuput{Content: "hello"},
-			args:    args{v: &ChatOuput{}},
-			wantErr: true,
+			name:     "DecodeContent invalid",
+			o:        ChatOuput{Content: "hello"},
+			wantResp: wantResp{},
+			wantErr:  true,
 		},
 		{
-			name:    "DecodeContent valid json",
-			o:       ChatOuput{Content: "```\n{\"content\":\"hello\"}\n```"},
-			args:    args{v: &ChatOuput{}},
-			wantErr: false,
+			name:     "DecodeContent valid json",
+			o:        ChatOuput{Content: "```\n{\"content\":\"valid\"}\n```"},
+			wantResp: wantResp{Content: "valid"},
+			wantErr:  false,
 		},
 		{
-			name:    "DecodeContent valid json on text",
-			o:       ChatOuput{Content: "random text before\n```\n{\"content\":\"hello\"}\n```\nrandom text after"},
-			args:    args{v: &ChatOuput{}},
-			wantErr: false,
+			name:     "DecodeContent valid json on text",
+			o:        ChatOuput{Content: "random text before\n```\n{\"content\":\"hello\"}\n```\nrandom text after"},
+			wantResp: wantResp{Content: "hello"},
+			wantErr:  false,
 		},
 		{
-			name:    "DecodeContent valid json on text get the last one",
-			o:       ChatOuput{Content: "random text before\n```\n{\"content\":\"hello\"}\n```\nrandom text after ```\n{\"content\":\"last\"}\n```"},
-			args:    args{v: &ChatOuput{}},
-			wantErr: false,
+			name:     "DecodeContent valid json on text get the last one",
+			o:        ChatOuput{Content: "random text before\n```\n{\"content\":\"hello\"}\n```\nrandom text after ```\n{\"content\":\"last\"}\n```"},
+			wantResp: wantResp{Content: "last"},
+			wantErr:  false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.o.DecodeContent(tt.args.v); (err != nil) != tt.wantErr {
+			resp := &wantResp{}
+			if err := tt.o.DecodeContent(resp); (err != nil) != tt.wantErr {
 				t.Errorf("ChatOuput.DecodeContent() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if !reflect.DeepEqual(resp, &tt.wantResp) && !tt.wantErr {
+				t.Logf("GOT: %+v", resp)
+				t.Logf("WANT: %+v", tt.wantResp)
+				t.Errorf("ChatOuput.DecodeContent() = %v, want %v", resp, tt.wantResp)
 			}
 		})
 	}

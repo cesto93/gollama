@@ -13,12 +13,12 @@ func (o ChatOuput) DecodeContent(v interface{}) error {
 		return fmt.Errorf("content is empty")
 	}
 
-	re := regexp.MustCompile("```\\n({.*})\\n```")
-	match := re.FindStringSubmatch(o.Content)
+	re := regexp.MustCompile("```\\s*(\\{.*?\\})\\s*```")
+	matches := re.FindAllStringSubmatch(o.Content, -1)
 
 	content := ""
-	if len(match) > 1 {
-		content = match[len(match)-1]
+	if len(matches) > 0 {
+		content = matches[len(matches)-1][1]
 	} else {
 		return fmt.Errorf("no JSON content found in content")
 	}
