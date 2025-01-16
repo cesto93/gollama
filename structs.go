@@ -34,7 +34,7 @@ func (o ChatOuput) DecodeContent(v interface{}) error {
 	return nil
 }
 
-func StructToStructuredFormat(s interface{}) (StructuredFormat, error) {
+func StructToStructuredFormat(s interface{}) StructuredFormat {
 	structValue := reflect.ValueOf(s)
 	structType := structValue.Type()
 
@@ -46,7 +46,7 @@ func StructToStructuredFormat(s interface{}) (StructuredFormat, error) {
 
 		strType, strItems, err := fieldTypeToGollamaType(field.Type)
 		if err != nil {
-			return StructuredFormat{}, err
+			return StructuredFormat{}
 		}
 
 		if field.Tag.Get("ignored") == "true" {
@@ -80,8 +80,7 @@ func StructToStructuredFormat(s interface{}) (StructuredFormat, error) {
 		Type:       "object",
 		Properties: properties,
 		Required:   required,
-	}, nil
-
+	}
 }
 
 func fieldTypeToGollamaType(fieldType reflect.Type) (string, string, error) {

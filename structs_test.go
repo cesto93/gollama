@@ -18,10 +18,9 @@ func TestStructToStructuredFormat(t *testing.T) {
 	}
 
 	tests := []struct {
-		name    string
-		args    args
-		want    StructuredFormat
-		wantErr bool
+		name string
+		args args
+		want StructuredFormat
 	}{
 		{
 			name: "StructToStructuredFormat",
@@ -31,16 +30,11 @@ func TestStructToStructuredFormat(t *testing.T) {
 				"value":   {Type: "boolean", Description: "test value"},
 				"list":    {Type: "array", Description: "test list", Items: ItemProperty{Type: "integer"}},
 			}, Required: []string{"content"}},
-			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := StructToStructuredFormat(tt.args.s)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("StructToStructuredFormat() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			got := StructToStructuredFormat(tt.args.s)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Logf("GOT: %+v", got)
 				t.Logf("WANT: %+v", tt.want)
