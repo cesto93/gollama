@@ -31,7 +31,7 @@ func main() {
 		Capital string `required:"true"`
 	}
 
-	option, _ := gollama.StructToStructuredFormat(Capital{})
+	option := gollama.StructToStructuredFormat(Capital{})
 
 	fmt.Printf("Option: %+v\n", option)
 

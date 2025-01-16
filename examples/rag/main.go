@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -13,16 +14,17 @@ import (
 func main() {
 	fmt.Println("RAG Example")
 
+	ctx := context.Background()
 	filename := "text.txt"
 	embedding_model := "nomic-embed-text"
 	chat_model := "llama3.2"
 
 	// Create a Gollama instances
 	e := gollama.New(embedding_model)
-	e.PullIfMissing()
+	e.PullIfMissing(ctx)
 
 	c := gollama.New(chat_model)
-	c.PullIfMissing()
+	c.PullIfMissing(ctx)
 
 	fmt.Println("Embedding model:", embedding_model)
 	fmt.Println("Chat model:", chat_model)
@@ -45,7 +47,7 @@ func main() {
 	// Embed the chunks
 	embeds := make([][]float64, 0)
 	for _, chunk := range chunks {
-		embedding, err := e.Embedding(chunk)
+		embedding, err := e.Embedding(ctx, chunk)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -81,7 +83,7 @@ func main() {
 		}
 
 		// Get the question embedding
-		question_emb, _ := e.Embedding(question)
+		question_emb, _ := e.Embedding(ctx, question)
 
 		// Search contexts
 		contexts := make([]string, 0)
@@ -105,7 +107,7 @@ func main() {
 		fmt.Println("Prompt:", prompt)
 
 		// Get the answer
-		answer, err := c.Chat(prompt)
+		answer, err := c.Chat(ctx, prompt)
 		if err != nil {
 			fmt.Println(err)
 			return

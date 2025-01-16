@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -8,9 +9,10 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
 	g := gollama.New("llama3.2")
 	g.Verbose = true
-	if err := g.PullIfMissing(); err != nil {
+	if err := g.PullIfMissing(ctx); err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
@@ -21,7 +23,7 @@ func main() {
 
 	fmt.Printf("Option: %+v\n", option)
 
-	output, err := g.Chat(prompt, option)
+	output, err := g.Chat(ctx, prompt, option)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -19,8 +20,9 @@ var (
 )
 
 func main() {
+	ctx := context.Background()
 	m := gollama.New("llama3.2-vision")
-	m.PullIfMissing()
+	m.PullIfMissing(ctx)
 
 	// Path with videos
 	scanner := bufio.NewScanner(os.Stdin)
@@ -92,7 +94,7 @@ func main() {
 
 		image := gollama.PromptImage{Filename: pathScreenshots + video.filename + ".jpg"}
 
-		res, err := m.Chat(prompt, image)
+		res, err := m.Chat(ctx, prompt, image)
 		if err != nil {
 			fmt.Println(err)
 			return

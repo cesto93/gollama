@@ -1,15 +1,17 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/jonathanhecl/gollama"
 )
 
 func main() {
+	ctx := context.Background()
 	g := gollama.New("llama3.2")
 	g.Verbose = true
-	if err := g.PullIfMissing(); err != nil {
+	if err := g.PullIfMissing(ctx); err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
@@ -21,11 +23,11 @@ func main() {
 		Population string `json:"population" required:"true" description:"how many people live in a city"`
 	}
 
-	option, _ := gollama.StructToStructuredFormat(Capital{})
+	option := gollama.StructToStructuredFormat(Capital{})
 
 	fmt.Printf("Option: %+v\n", option)
 
-	output, err := g.Chat(prompt, option)
+	output, err := g.Chat(ctx, prompt, option)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
