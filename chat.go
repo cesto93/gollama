@@ -85,6 +85,7 @@ func (c *Gollama) Chat(ctx context.Context, prompt string, options ...ChatOption
 		Options: chatOptionsRequest{
 			Seed:          seed,
 			Temperature:   temperature,
+			TopP:          c.TopP,
 			ContextLength: contextLength,
 		},
 	}

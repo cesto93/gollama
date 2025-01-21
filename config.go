@@ -10,6 +10,7 @@ type Gollama struct {
 	ModelName                 string
 	SeedOrNegative            int
 	TemperatureIfNegativeSeed float64
+	TopP                      float64
 	PullTimeout               time.Duration
 	HTTPTimeout               time.Duration
 	TrimSpace                 bool
@@ -31,6 +32,7 @@ func (c *Gollama) SetHTTPTimeout(timeout time.Duration) *Gollama {
 	return c
 }
 
+// SetSeed Sets the random number seed to use for generation. Setting this to a specific number will make the model generate the same text for the same prompt. (Default: 0)
 func (c *Gollama) SetSeed(seed int) *Gollama {
 	c.SeedOrNegative = seed
 	return c
@@ -41,8 +43,15 @@ func (c *Gollama) SetRandomSeed() *Gollama {
 	return c
 }
 
+// SetTemperature The temperature of the model. Increasing the temperature will make the model answer more creatively. (Default: 0.8)
 func (c *Gollama) SetTemperature(temperature float64) *Gollama {
 	c.TemperatureIfNegativeSeed = temperature
+	return c
+}
+
+// SetTopP Works together with top-k. A higher value (e.g., 0.95) will lead to more diverse text, while a lower value (e.g., 0.5) will generate more focused and conservative text. (Default: 0.9)
+func (c *Gollama) SetTopP(topP float64) *Gollama {
+	c.TopP = topP
 	return c
 }
 

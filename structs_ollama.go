@@ -50,6 +50,7 @@ type chatMessage struct {
 type chatOptionsRequest struct {
 	Seed          int     `json:"seed"`
 	Temperature   float64 `json:"temperature"`
+	TopP          float64 `json:"top_p"`
 	ContextLength int64   `json:"context_length,omitempty"`
 }
 
