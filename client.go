@@ -47,6 +47,7 @@ func NewWithConfig(config Gollama) *Gollama {
 		ModelName:                 getEnv("OLLAMA_MODEL", defaultModel),
 		SeedOrNegative:            defaultFixedSeed,
 		TemperatureIfNegativeSeed: 0.8,
+		TopK:                      40,
 		TopP:                      0.9,
 		PullTimeout:               defaultPullTimeout,
 		HTTPTimeout:               defaultHTTPTimeout,
@@ -69,6 +70,10 @@ func NewWithConfig(config Gollama) *Gollama {
 
 	if oc.TemperatureIfNegativeSeed != config.TemperatureIfNegativeSeed {
 		oc.TemperatureIfNegativeSeed = config.TemperatureIfNegativeSeed
+	}
+
+	if oc.TopK != config.TopK {
+		oc.TopK = config.TopK
 	}
 
 	if oc.TopP != config.TopP {

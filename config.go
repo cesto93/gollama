@@ -10,6 +10,7 @@ type Gollama struct {
 	ModelName                 string
 	SeedOrNegative            int
 	TemperatureIfNegativeSeed float64
+	TopK                      int
 	TopP                      float64
 	PullTimeout               time.Duration
 	HTTPTimeout               time.Duration
@@ -49,12 +50,19 @@ func (c *Gollama) SetTemperature(temperature float64) *Gollama {
 	return c
 }
 
+// SetTopK Reduces the probability of generating nonsense. A higher value (e.g. 100) will give more diverse answers, while a lower value (e.g. 10) will be more conservative. (Default: 40)
+func (c *Gollama) SetTopK(topK int) *Gollama {
+	c.TopK = topK
+	return c
+}
+
 // SetTopP Works together with top-k. A higher value (e.g., 0.95) will lead to more diverse text, while a lower value (e.g., 0.5) will generate more focused and conservative text. (Default: 0.9)
 func (c *Gollama) SetTopP(topP float64) *Gollama {
 	c.TopP = topP
 	return c
 }
 
+// SetContextLength Sets the size of the context window used to generate the next token. (Default: 2048)
 func (c *Gollama) SetContextLength(contextLength int64) *Gollama {
 	c.ContextLength = contextLength
 	return c
