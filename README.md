@@ -67,6 +67,6 @@ func main() {
 - `PullIfMissing(model ...string) error` - Pull model if missing
 - `GetDetails(model ...string) ([]ModelDetails, error)` - Get model details from ollama
 - `Version() (string, error)` - Get ollama version
-- `StructToStructuredFormat(interface{}) (StructuredFormat, error)` - Converts a Go struct to a Gollama structured format
+- `StructToStructuredFormat(interface{}) StructuredFormat` - Converts a Go struct to a Gollama structured format
 - `CosenoSimilarity(vector1, vector2 []float64) float64` - Calculates the cosine similarity between two vectors
 - output.`DecodeContent(output interface{}) error` - Decodes the content of a Gollama response
