@@ -16,6 +16,7 @@ func (o ChatOuput) DecodeContent(v interface{}) error {
 
 	var lastJSON string
 	for _, block := range blocks {
+		block = strings.TrimPrefix(block, "json")
 		block = strings.TrimSpace(block)
 		if strings.HasPrefix(block, "{") && strings.HasSuffix(block, "}") {
 			lastJSON = block
