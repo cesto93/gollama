@@ -109,7 +109,7 @@ func (c *Gollama) Chat(prompt string, options ...ChatOption) (*ChatOuput, error)
 	}
 
 	if resp.Model != c.ModelName {
-		return nil, fmt.Errorf("model don't found")
+		return nil, fmt.Errorf("model not found")
 	}
 
 	out := &ChatOuput{
