@@ -65,6 +65,7 @@ func main() {
 - `ModelSize(model string) (int, error)` - Get model size from ollama
 - `PullModel(model string) error` - Pull model
 - `PullIfMissing(model ...string) error` - Pull model if missing
+- `GetModels() ([]string, error)` - Get list of available models
 - `GetDetails(model ...string) ([]ModelDetails, error)` - Get model details from ollama
 - `Version() (string, error)` - Get ollama version
 - `StructToStructuredFormat(interface{}) StructuredFormat` - Converts a Go struct to a Gollama structured format

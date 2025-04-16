@@ -153,3 +153,36 @@ func TestGollama_GetDetails(t *testing.T) {
 		})
 	}
 }
+
+func TestGollama_GetModels(t *testing.T) {
+	type args struct {
+		ctx context.Context
+	}
+	tests := []struct {
+		name    string
+		c       *Gollama
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		{
+			name:    "GetModels",
+			c:       New("llama3.2"),
+			args:    args{ctx: context.Background()},
+			want:    true,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.c.GetModels(tt.args.ctx)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Gollama.GetModels() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if len(got) == 0 {
+				t.Errorf("Gollama.GetModels() without response")
+			}
+		})
+	}
+}

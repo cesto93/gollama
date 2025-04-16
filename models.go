@@ -132,3 +132,36 @@ func (c *Gollama) GetDetails(ctx context.Context, model ...string) ([]ModelDetai
 
 	return ret, nil
 }
+
+// GetModels retrieves a list of available models from the server.
+//
+// It returns a slice of strings containing model names, or an error if the request fails.
+func (c *Gollama) GetModels(ctx context.Context) ([]string, error) {
+	type detailsResponse struct {
+		Family string `json:"family"`
+	}
+
+	type modelResponse struct {
+		Name       string          `json:"model"`
+		ModifiedAt string          `json:"modified_at"`
+		Details    detailsResponse `json:"details"`
+	}
+
+	type tagsResponse struct {
+		Models []modelResponse `json:"models"`
+	}
+
+	var resp tagsResponse
+	err := c.apiGet(ctx, "/api/tags", &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	res := []string{}
+
+	for _, m := range resp.Models {
+		res = append(res, m.Name)
+	}
+
+	return res, nil
+}
