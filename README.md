@@ -53,6 +53,7 @@ func main() {
 - Chat with model
 - Generates embeddings with model
 - Get model details
+- Get list of available models
 
 ### Functions
 
