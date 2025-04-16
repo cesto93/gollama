@@ -18,29 +18,29 @@ import (
 
 func main() {
 	ctx := context.Background()
-	g := gollama.New("llama3.2")
-	g.Verbose = true
-	if err := g.PullIfMissing(ctx); err != nil {
+	g := gollama.New("llama3.2") // Create a new Gollama with the default model
+	g.Verbose = true // Enable verbose mode
+	if err := g.PullIfMissing(ctx); err != nil { // Pull the model if it is not available
 		fmt.Println("Error:", err)
 		return
 	}
 
-	prompt := "what is the capital of Argentina?"
+	prompt := "what is the capital of Argentina?" // The prompt to send to the model
 
 	type Capital struct {
 		Capital string `required:"true"`
 	}
 
-	option := gollama.StructToStructuredFormat(Capital{})
+	option := gollama.StructToStructuredFormat(Capital{}) // Convert the struct to a structured format
 
 	fmt.Printf("Option: %+v\n", option)
 
-	output, err := g.Chat(ctx, prompt, option)
+	output, err := g.Chat(ctx, prompt, option) // Generate a response
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
-	fmt.Printf("\n%s\n", output.Content)
+	fmt.Printf("\n%s\n", output.Content) // Print the response
 }
 ```
 
