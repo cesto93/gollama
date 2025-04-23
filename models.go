@@ -6,6 +6,14 @@ import (
 	"fmt"
 )
 
+// SetModel sets the model to use for the Gollama object.
+func (c *Gollama) SetModel(model string) {
+	c.ModelName = model
+}
+
+// ListModels lists all available models on the server.
+//
+// The function will return an error if the request fails.
 func (c *Gollama) ListModels(ctx context.Context) ([]ModelInfo, error) {
 	type tagsResponse struct {
 		Models []ModelInfo `json:"models"`
