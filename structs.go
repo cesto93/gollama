@@ -132,3 +132,42 @@ func fieldTypeToGollamaType(fieldType reflect.Type) (string, string, error) {
 		return "string", "", fmt.Errorf("unsupported field type: %s", fieldType.String())
 	}
 }
+
+func AnyToStructuredFormat(val interface{}) StructuredFormat {
+	v := reflect.ValueOf(val)
+	t := v.Type()
+
+	switch t.Kind() {
+	case reflect.Struct:
+		return StructToStructuredFormat(val)
+	case reflect.Map:
+		properties := make(map[string]*FormatProperty)
+		for _, key := range v.MapKeys() {
+			// Assume all keys are strings for simplicity
+			propVal := v.MapIndex(key)
+			propType := propVal.Type()
+			strType, _, _ := fieldTypeToGollamaType(propType)
+			properties[key.String()] = &FormatProperty{
+				Type: strType,
+			}
+		}
+		return StructuredFormat{
+			Type:       "object",
+			Properties: properties,
+		}
+	case reflect.Slice, reflect.Array:
+		elemType := t.Elem()
+		strType, _, _ := fieldTypeToGollamaType(elemType)
+		return StructuredFormat{
+			Type: "array",
+			Items: &FormatProperty{
+				Type: strType,
+			},
+		}
+	default:
+		strType, _, _ := fieldTypeToGollamaType(t)
+		return StructuredFormat{
+			Type: strType,
+		}
+	}
+}

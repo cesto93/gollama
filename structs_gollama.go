@@ -73,6 +73,7 @@ type StructuredFormat struct {
 	Title      string                     `json:"title,omitempty"`
 	Type       string                     `json:"type"`
 	Properties map[string]*FormatProperty `json:"properties"`
+	Items      *FormatProperty            `json:"items,omitempty"` // Recursive for arrays
 	Required   []string                   `json:"required,omitempty"`
 }
 
