@@ -42,13 +42,13 @@ func TestGollama_Chat(t *testing.T) {
 			c:    New("llama3.2"),
 			args: args{Prompt: "Tell me about Argentina. Response in JSON", Options: StructuredFormat{
 				Type: "object",
-				Properties: map[string]FormatProperty{
+				Properties: map[string]*FormatProperty{
 					"capital": {
 						Type: "string",
-					},
-					"language": {
+					}, // Changed from FormatProperty to *FormatProperty
+					"language": { // Changed from FormatProperty to *FormatProperty
 						Type: "array",
-						Items: ItemProperty{
+						Items: &FormatProperty{
 							Type: "string",
 						},
 					}},
@@ -67,7 +67,7 @@ func TestGollama_Chat(t *testing.T) {
 					Description: "Get the current weather in a specific city",
 					Parameters: StructuredFormat{
 						Type: "object",
-						Properties: map[string]FormatProperty{
+						Properties: map[string]*FormatProperty{
 							"city": {
 								Type:        "string",
 								Description: "The name of the city",

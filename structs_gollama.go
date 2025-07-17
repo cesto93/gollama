@@ -61,21 +61,19 @@ type PromptImage struct {
 	Filename string `json:"filename"`
 }
 
-type ItemProperty struct {
-	Type string `json:"type"`
-}
-
 type FormatProperty struct {
-	Type        string       `json:"type"`
-	Description string       `json:"description,omitempty"`
-	Enum        []string     `json:"enum,omitempty"`
-	Items       ItemProperty `json:"items,omitempty"`
+	Type        string                     `json:"type"`
+	Description string                     `json:"description,omitempty"`
+	Enum        []string                   `json:"enum,omitempty"`
+	Items       *FormatProperty            `json:"items,omitempty"`      // Recursive for arrays
+	Properties  map[string]*FormatProperty `json:"properties,omitempty"` // Recursive for objects
 }
 
 type StructuredFormat struct {
-	Type       string                    `json:"type"`
-	Properties map[string]FormatProperty `json:"properties"`
-	Required   []string                  `json:"required,omitempty"`
+	Title      string                     `json:"title,omitempty"`
+	Type       string                     `json:"type"`
+	Properties map[string]*FormatProperty `json:"properties"`
+	Required   []string                   `json:"required,omitempty"`
 }
 
 type ToolFunction struct {

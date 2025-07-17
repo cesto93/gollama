@@ -25,10 +25,10 @@ func TestStructToStructuredFormat(t *testing.T) {
 		{
 			name: "StructToStructuredFormat",
 			args: args{s: myStruct{}},
-			want: StructuredFormat{Type: "object", Properties: map[string]FormatProperty{
+			want: StructuredFormat{Type: "object", Properties: map[string]*FormatProperty{
 				"content": {Type: "string", Description: ""},
 				"value":   {Type: "boolean", Description: "test value"},
-				"list":    {Type: "array", Description: "test list", Items: ItemProperty{Type: "integer"}},
+				"list":    {Type: "array", Description: "test list", Items: &FormatProperty{Type: "integer"}},
 			}, Required: []string{"content"}},
 		},
 	}

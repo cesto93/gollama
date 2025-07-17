@@ -39,13 +39,13 @@ func StructToStructuredFormat(s interface{}) StructuredFormat {
 	structValue := reflect.ValueOf(s)
 	structType := structValue.Type()
 
-	properties := make(map[string]FormatProperty)
+	properties := make(map[string]*FormatProperty)
 	required := make([]string, 0)
 
 	for i := 0; i < structType.NumField(); i++ {
 		field := structType.Field(i)
 
-		strType, strItems, err := fieldTypeToGollamaType(field.Type)
+		strType, _, err := fieldTypeToGollamaType(field.Type)
 		if err != nil {
 			return StructuredFormat{}
 		}
@@ -59,15 +59,38 @@ func StructToStructuredFormat(s interface{}) StructuredFormat {
 			fieldName = field.Tag.Get("json")
 		}
 
-		property := FormatProperty{
+		property := &FormatProperty{
 			Type:        strType,
 			Description: field.Tag.Get("description"),
 		}
 
-		if strItems != "" {
-			property.Items = ItemProperty{
-				Type: strItems,
+		switch field.Type.Kind() {
+		case reflect.Struct:
+			// Recursively handle nested structs
+			nested := StructToStructuredFormat(reflect.New(field.Type).Elem().Interface())
+			property.Type = "object"
+			property.Properties = make(map[string]*FormatProperty)
+			for k, v := range nested.Properties {
+				property.Properties[k] = v
 			}
+		case reflect.Slice:
+			elemType := field.Type.Elem()
+			elemKind := elemType.Kind()
+			itemProperty := &FormatProperty{}
+			switch elemKind {
+			case reflect.Struct:
+				nested := StructToStructuredFormat(reflect.New(elemType).Elem().Interface())
+				itemProperty.Type = "object"
+				itemProperty.Properties = make(map[string]*FormatProperty)
+				for k, v := range nested.Properties {
+					itemProperty.Properties[k] = v
+				}
+			default:
+				elemTypeStr, _, _ := fieldTypeToGollamaType(elemType)
+				itemProperty.Type = elemTypeStr
+			}
+			property.Type = "array"
+			property.Items = itemProperty
 		}
 
 		if field.Tag.Get("required") == "true" {
