@@ -134,5 +134,61 @@ func fieldTypeToGollamaType(fieldType reflect.Type) (string, string, error) {
 }
 
 func AnyToStructuredFormat(val interface{}) StructuredFormat {
-	return val.(StructuredFormat)
+	m, ok := val.(map[string]interface{})
+	if !ok {
+		return StructuredFormat{}
+	}
+
+	sf := StructuredFormat{}
+
+	if t, ok := m["type"].(string); ok {
+		sf.Type = t
+	}
+	if props, ok := m["properties"].(map[string]interface{}); ok {
+		sf.Properties = make(map[string]*FormatProperty)
+		for k, v := range props {
+			if propMap, ok := v.(map[string]interface{}); ok {
+				fp := &FormatProperty{}
+				if typ, ok := propMap["type"].(string); ok {
+					fp.Type = typ
+				}
+				if desc, ok := propMap["description"].(string); ok {
+					fp.Description = desc
+				}
+				if items, ok := propMap["items"].(map[string]interface{}); ok {
+					itemProp := &FormatProperty{}
+					if itemType, ok := items["type"].(string); ok {
+						itemProp.Type = itemType
+					}
+					fp.Items = itemProp
+				}
+				if nestedProps, ok := propMap["properties"].(map[string]interface{}); ok {
+					fp.Properties = make(map[string]*FormatProperty)
+					for nk, nv := range nestedProps {
+						if npMap, ok := nv.(map[string]interface{}); ok {
+							nfp := &FormatProperty{}
+							if ntyp, ok := npMap["type"].(string); ok {
+								nfp.Type = ntyp
+							}
+							if ndesc, ok := npMap["description"].(string); ok {
+								nfp.Description = ndesc
+							}
+							fp.Properties[nk] = nfp
+						}
+					}
+				}
+				sf.Properties[k] = fp
+			}
+		}
+	}
+	if req, ok := m["required"].([]interface{}); ok {
+		sf.Required = make([]string, len(req))
+		for i, v := range req {
+			if s, ok := v.(string); ok {
+				sf.Required[i] = s
+			}
+		}
+	}
+
+	return sf
 }
